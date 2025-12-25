@@ -1,0 +1,10 @@
+CREATE INDEX idx_report_landing_page_query 
+ON report_landing_page(publisher_id, date, domain_id, landing_page);
+
+publisher_id 較具有單一性 我會放在第一位置 再者是重複性可能較高 同一個publisher 發表的東西會較為多
+
+再來則是 date, 將日期做index 是比較安全的處理方式
+
+domain_id則排序比較後面 因為不一定每個publisher都有不同的domain_id
+
+landing_page 則最後 依目前的select 也是做groupby用途而已

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q10 Coding</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    img { object-fit: cover; }
+    .overlay-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .popup-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container mt-4">
+      <h1 class="mb-4">Q10: Coding</h1>
+
+      <!-- 首頁 -->
+      <div v-if="currentView === 'home'" class="d-flex gap-3">
+        <img :src="scenes[0].background" class="rounded" style="width: 300px; height: 300px;" alt="Hero">
+        <div class="d-flex gap-3">
+          <div
+            v-for="product in scenes[0].products"
+            :key="product.id"
+            @click="openProductDetail(product)"
+            style="cursor: pointer; width: 100px;"
+          >
+            <img :src="product.image" :alt="product.name" class="img-thumbnail" style="height: 120px; width: 100%;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商品詳細頁 -->
+    <div v-if="currentView === 'detail'">
+      <div class="overlay-bg" @click="closeDetail"></div>
+      <div class="popup-container">
+        <div class="card shadow" style="width: 400px;">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 flex-grow-1 text-center">Product Detail</h5>
+            <button type="button" class="btn-close" @click="closeDetail"></button>
+          </div>
+          <div class="card-body position-relative">
+            <img :src="selectedProduct.image" :alt="selectedProduct.name" class="w-100 mb-3" style="height: 300px;">
+            <div class="mb-3">
+              <p class="mb-1">Product Description</p>
+              <p class="mb-1">Product Description</p>
+              <p class="mb-1">Product Description</p>
+            </div>
+            <button class="btn btn-dark position-absolute" style="bottom: 150px; right: 50px;" @click="openSeenIn">Seen In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seen In 頁面 -->
+    <div v-if="currentView === 'seenIn'">
+      <div class="overlay-bg" @click="closeSeenIn"></div>
+      <div class="popup-container">
+        <div class="card shadow" style="width: 600px; max-height: 80vh; overflow-y: auto;">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <button class="btn btn-link text-dark text-decoration-none p-0" @click="closeSeenIn">◄</button>
+            <h5 class="card-title mb-0 flex-grow-1 text-center">Product – Seen In</h5>
+            <button type="button" class="btn-close" @click="closeAll"></button>
+          </div>
+          <div class="card-body">
+            <img :src="selectedProduct.image" :alt="selectedProduct.name" class="mb-3" style="width: 80px; height: 80px;">
+
+            <div class="row g-3">
+              <div
+                v-for="scene in getProductScenes(selectedProduct.id)"
+                :key="scene.id"
+                class="col-6"
+              >
+                <img :src="scene.background" alt="Scene" class="w-100 mb-2" style="height: 200px;">
+                <div class="d-flex gap-2">
+                  <img
+                    v-for="product in scene.products"
+                    :key="product.id"
+                    :src="product.image"
+                    :alt="product.name"
+                    @click="openProductDetail(product)"
+                    style="width: 50px; height: 60px; cursor: pointer;"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          currentView: 'home',
+          selectedProduct: null,
+
+          products: [
+            { id: 1, name: '紅色洋裝', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=240&fit=crop' },
+            { id: 2, name: '棕色包包', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=240&fit=crop' },
+            { id: 3, name: '米色外套', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=200&h=240&fit=crop' },
+            { id: 4, name: '黑色洋裝', image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=200&h=240&fit=crop' },
+            { id: 5, name: '牛仔包', image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=200&h=240&fit=crop' },
+            { id: 6, name: '白色襯衫', image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=200&h=240&fit=crop' }
+          ],
+
+          scenes: [
+            {
+              id: 1,
+              background: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=400&fit=crop',
+              products: [
+                { id: 1, name: '紅色洋裝', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=240&fit=crop' },
+                { id: 2, name: '棕色包包', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=240&fit=crop' },
+                { id: 3, name: '米色外套', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=200&h=240&fit=crop' }
+              ]
+            },
+            {
+              id: 2,
+              background: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=400&fit=crop',
+              products: [
+                { id: 1, name: '紅色洋裝', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=240&fit=crop' },
+                { id: 4, name: '黑色洋裝', image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=200&h=240&fit=crop' },
+                { id: 5, name: '牛仔包', image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=200&h=240&fit=crop' }
+              ]
+            },
+            {
+              id: 3,
+              background: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=400&fit=crop',
+              products: [
+                { id: 2, name: '棕色包包', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=240&fit=crop' },
+                { id: 5, name: '牛仔包', image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=200&h=240&fit=crop' },
+                { id: 6, name: '白色襯衫', image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=200&h=240&fit=crop' }
+              ]
+            }
+          ]
+        }
+      },
+      methods: {
+        openProductDetail(product) {
+          this.selectedProduct = product;
+          this.currentView = 'detail';
+        },
+        closeDetail() {
+          this.currentView = 'home';
+          this.selectedProduct = null;
+        },
+        openSeenIn() {
+          this.currentView = 'seenIn';
+        },
+        closeSeenIn() {
+          this.currentView = 'detail';
+        },
+        closeAll() {
+          this.currentView = 'home';
+          this.selectedProduct = null;
+        },
+        getProductScenes(productId) {
+          return this.scenes.filter(scene =>
+            scene.products.some(p => p.id === productId)
+          );
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+進度條的圓圈會使用
+
+background: conic-gradient 來做
+如
+
+    background: conic-gradient(
+        from -90deg,
+        #4CAF50 0deg,           
+        #4CAF50 252deg,         
+        #e0e0e0 252deg,         
+        #e0e0e0 360deg          
+    );
+
+
+from -90deg 會是起點
+0~252則是完成條的角度
+252~360是缺失的角度
+
+
+slider 會使用這段語法去處理 要使用 display flex
+transform: translateX(-100%);第一張
+transform: translateX(-200%);第二張
+以此類推

@@ -1,0 +1,25 @@
+後端基本會有 
+router 控制路由
+- 我需要管理 api 的路徑, 這是最基本的功能需求
+
+controller 主function跑法
+- 集中程式的業務邏輯管理, 也很基本, mvc架構必須要的
+
+model 與資料庫的對聯
+- 管理資料庫的連接, 尤其在現代開發中, 資料庫的連接可能會有不一樣的端口, 有時候query的是sql 有時候 query的是 nosql
+
+config 自定義參數 
+- 需做環境管理, 基本的
+
+middleware 中介層管理
+- cors 的調整, 就是必須要有 middleware, log的紀錄又或是 jwt token 都需要 middleware
+
+前端基本會有 
+router 控制路由
+- spa 架構的必須需求
+
+store 狀態管理
+- 登入時需要紀錄狀態
+
+component 組件管理
+- 元件重複使用, 方便管理, 也不需要撰寫
